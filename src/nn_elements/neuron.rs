@@ -1,6 +1,7 @@
 use ndarray::Array1;
 use rand::Rng;
 
+#[derive(Clone)] 
 #[derive(Debug)]
 pub struct Neuron {
     pub weights: Array1<f64>,
