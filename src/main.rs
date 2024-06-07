@@ -1,9 +1,11 @@
 extern crate ndarray;
 mod nn_elements;
 mod inputs;
+mod utils;
 
 use ndarray::{Array1, array, Array2};
 use nn_elements::layer::DenseLayer;
+use nn_elements::activation_func::ActivationFunction;
 use inputs::dataset::Dataset;
 
 fn main() {
@@ -12,18 +14,17 @@ fn main() {
     let dataset: Dataset = Dataset::new(inputs.clone());
     println!("{:?}", dataset);
 
-    let layer1: DenseLayer = DenseLayer::new(3, 3);
-    let layer2: DenseLayer = DenseLayer::new(4, 3);
-    println!("{:?}", layer1);
+    let input_matrix: &Array2<f64> = dataset.get_inputs();
+    
+    let layer1: DenseLayer = DenseLayer::new(3, 3, ActivationFunction::ReLU);
 
-    // Perform matrix-vector multiplication 3x3 * 3x2 = 3x2, in the output the rows are the neurons and the columns are the batches
-    let out1: Array2<f64> = layer1.weights_matrix.dot(&dataset.inputs.t());
-    let out1_with_bias: Array2<f64> = &out1 + layer1.biases;
+    // Perform the forward pass
+    let output1: Array2<f64> = layer1.forward(input_matrix.clone());
 
-    // weights matrix 4x3, first_layer_output 3x2, 4x3 * 3x2 = 4x2
-    let out2: Array2<f64> = layer2.weights_matrix.dot(&out1_with_bias);
-    let out2_with_bias: Array2<f64> = &out2 + layer2.biases;
+    println!(" First layer Output: {:?}", output1);
 
-    println!("Output no bias: {:?}", out2);
-    println!("Output: {:?}", out2_with_bias);
+    let layer2: DenseLayer = DenseLayer::new(4, 3, ActivationFunction::ReLU);
+    let output1: Array2<f64> = layer2.forward(output1.clone());
+
+    println!("Final Output: {:?}", output1);
 }

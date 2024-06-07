@@ -11,4 +11,8 @@ impl Dataset {
 
         Dataset { inputs: array_inputs }
     }
+
+    pub fn get_inputs(&self) -> &Array2<f64> {
+        &self.inputs
+    }
 }
